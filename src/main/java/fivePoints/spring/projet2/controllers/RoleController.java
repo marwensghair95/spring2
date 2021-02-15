@@ -2,8 +2,7 @@ package fivePoints.spring.projet2.controllers;
 
 
 import fivePoints.spring.projet2.models.Role;
-import fivePoints.spring.projet2.models.UserDetails;
-import fivePoints.spring.projet2.responses.MessageResponse;
+import fivePoints.spring.projet2.payload.responses.MessageResponse;
 import fivePoints.spring.projet2.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value="/roles")

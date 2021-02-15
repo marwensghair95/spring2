@@ -15,6 +15,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 public class Projet2Application implements ApplicationRunner {
@@ -37,9 +39,9 @@ public class Projet2Application implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 		// Clean up database tables
 		this.roleRepository.deleteAllInBatch();
-//		this.userRepository.deleteAllInBatch();
-//		this.userDetailsRepository.deleteAllInBatch();
-//		this.posteRepository.deleteAllInBatch();
+		this.userRepository.deleteAllInBatch();
+		this.userDetailsRepository.deleteAllInBatch();
+		this.posteRepository.deleteAllInBatch();
 
 		// Save roles
 		Role superAdminRole = this.roleRepository.save(new Role("super-admin"));
@@ -66,6 +68,25 @@ public class Projet2Application implements ApplicationRunner {
 		Poste post1 = new Poste("","", true);
 		Poste post2 = new Poste("","", true);
 		Poste post3 = new Poste("","", true);
-		
+
+		// associate user1 to posts
+		post1.setUser(user1);
+		post2.setUser(user1);
+		post3.setUser(user1);
+		this.posteRepository.save(post1);
+		this.posteRepository.save(post2);
+		this.posteRepository.save(post3);
+		this.userRepository.save(user1);
+
+		// ManyToMany Relations
+		Set<Role> roles = new HashSet<>();
+		roles.add(superAdminRole);
+		roles.add(adminRole);
+		roles.add(userRole);
+		roles.add(guestRole);
+		user1.setRoles(roles);
+		this.userRepository.save(user1);
 	}
+
+
 }

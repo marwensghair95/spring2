@@ -1,7 +1,7 @@
 package fivePoints.spring.projet2.controllers;
 
 import fivePoints.spring.projet2.models.UserDetails;
-import fivePoints.spring.projet2.responses.MessageResponse;
+import fivePoints.spring.projet2.payload.responses.MessageResponse;
 import fivePoints.spring.projet2.services.UserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;

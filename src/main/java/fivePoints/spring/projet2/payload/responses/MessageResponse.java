@@ -1,4 +1,4 @@
-package fivePoints.spring.projet2.responses;
+package fivePoints.spring.projet2.payload.responses;
 
 import lombok.Data;
 import lombok.NonNull;

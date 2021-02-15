@@ -1,8 +1,7 @@
 package fivePoints.spring.projet2.controllers;
 
 import fivePoints.spring.projet2.models.Poste;
-import fivePoints.spring.projet2.models.User;
-import fivePoints.spring.projet2.responses.MessageResponse;
+import fivePoints.spring.projet2.payload.responses.MessageResponse;
 import fivePoints.spring.projet2.services.PosteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value="/posts")
