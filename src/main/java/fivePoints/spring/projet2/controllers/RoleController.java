@@ -45,8 +45,9 @@ public class RoleController {
     }
 
     @PutMapping("/update/{id}")
-    Role upateRole(@RequestBody Role newPost,@PathVariable Integer id){
-        return this.roleService.update(newPost,id);
+    public ResponseEntity<?> upateRole(@RequestBody Role newPost,@PathVariable Integer id){
+        String message =  this.roleService.update(newPost,id);
+        return ResponseEntity.ok().body(new MessageResponse(message));
     }
 
     @DeleteMapping("/delete/{id}")

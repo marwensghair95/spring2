@@ -41,8 +41,9 @@ public class UserDetailsController {
     }
 
     @PutMapping("/{id}")
-    public UserDetails updateUserByID(@PathVariable(value="id") int id, @RequestBody UserDetails userDetails) {
-        return userDetailsService.updateUserByID(id, userDetails);
+    public  ResponseEntity<MessageResponse> updateUserByID(@PathVariable(value="id") int id, @RequestBody UserDetails userDetails) {
+        String message = userDetailsService.updateUserByID(id, userDetails);
+        return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

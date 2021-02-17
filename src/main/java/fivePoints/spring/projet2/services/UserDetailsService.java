@@ -1,6 +1,7 @@
 package fivePoints.spring.projet2.services;
 
 
+import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
 import fivePoints.spring.projet2.models.UserDetails;
 import fivePoints.spring.projet2.repositories.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +25,33 @@ public class UserDetailsService {
     }
 
     public UserDetails getUserByID(int id) {
-        return userDetailsRepository.findById(id).get();
+        Optional<UserDetails>  userDetailData = userDetailsRepository.findById(id);
+        return userDetailData.orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    public UserDetails updateUserByID(int id, UserDetails userDetails) {
-        UserDetails existingUser = userDetailsRepository.findById(id).orElse(null);
-        if(existingUser != null)
+    public String updateUserByID(int id, UserDetails userDetails) {
+        Optional<UserDetails>  userDetailsData = userDetailsRepository.findById(id);
+        if(userDetailsData.isPresent())
         {
+            UserDetails existingUser = userDetailsData.orElse(null);
             existingUser.setAge(userDetails.getAge());
             existingUser.setBirthDate(userDetails.getBirthDate());
             existingUser.setGithubProfileLink(userDetails.getGithubProfileLink());
             existingUser.setLinkedinProfileLink(userDetails.getLinkedinProfileLink());
+            this.userDetailsRepository.save(existingUser);
+            return "User updated successfully!";
+        }else {
+            throw new ResourceNotFoundException("User not found");
         }
-        return userDetailsRepository.save(existingUser);
     }
 
     public String deleteUserByID(int id) {
         Optional<UserDetails> existingUser = userDetailsRepository.findById(id);
-        if(existingUser.isPresent()) {
+        if (existingUser.isPresent()) {
             userDetailsRepository.delete(existingUser.get());
-            return "User is deleted by id "+ id;
+            return "User deleted successfully!";
+        } else {
+            throw new ResourceNotFoundException("User not found");
         }
-        throw new RuntimeException("User not found .");
     }
 }

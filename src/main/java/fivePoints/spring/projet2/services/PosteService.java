@@ -1,6 +1,8 @@
 package fivePoints.spring.projet2.services;
 
+import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
 import fivePoints.spring.projet2.models.Poste;
+import fivePoints.spring.projet2.models.User;
 import fivePoints.spring.projet2.repositories.PosteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,8 @@ public class PosteService {
         return "Post added successfully";
     }
     public Poste getPostById(Integer id){
-        return postRepository.findById(id).get();
+        Optional<Poste> posteData =  postRepository.findById(id);
+        return posteData.orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
     public List<Poste> getByTitre(String title){
         return postRepository.getPostsByTitle(title);
@@ -39,6 +42,7 @@ public class PosteService {
         postRepository.deleteById(id);
         return "Post deleted sucessfully!";
     }
+
     public Poste update(Poste newPost, Integer id) {
         return postRepository.findById(id)
                 .map(post -> {

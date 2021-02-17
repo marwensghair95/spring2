@@ -1,5 +1,6 @@
 package fivePoints.spring.projet2.services;
 
+import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
 import fivePoints.spring.projet2.models.User;
 import fivePoints.spring.projet2.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ public class UserService {
     }
 
     public User getUserByID(int id) {
-        return userRepository.findById(id).get();
+        Optional<User> userData =  userRepository.findById(id);
+        return userData.orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
 //    public User updateUserByID(int id, User user) {
@@ -51,17 +53,18 @@ public class UserService {
             // return statement
             return "User updated successfully!";
         } else {
-            return "User not found";
+            throw new ResourceNotFoundException("User not found");
         }
     }
 
 
     public String deleteUserByID(int id) {
         Optional<User> existingUser = userRepository.findById(id);
-        if(existingUser.isPresent()) {
+        if (existingUser.isPresent()) {
             userRepository.delete(existingUser.get());
-            return "User is deleted by id "+ id;
+            return "User deleted successfully!";
+        } else {
+            throw new ResourceNotFoundException("User not found");
         }
-        throw new RuntimeException("User not found .");
     }
 }

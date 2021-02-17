@@ -1,7 +1,9 @@
 package fivePoints.spring.projet2.services;
 
 
+import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
 import fivePoints.spring.projet2.models.Role;
+import fivePoints.spring.projet2.models.User;
 import fivePoints.spring.projet2.repositories.PosteRepository;
 import fivePoints.spring.projet2.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +26,36 @@ public class RoleService {
     }
     public String savenewRole(Role newRole){
         roleRepository.save(newRole);
-        return "Post added successfully";
+        return "Role added successfully";
     }
     public Role getPostById(Integer id){
-        return roleRepository.findById(id).get();
+        Optional<Role> roleData = roleRepository.findById(id);
+        return roleData.orElseThrow(() -> new ResourceNotFoundException("Role not found"));
     }
 
 
     public String delete(Integer id) {
-        roleRepository.deleteById(id);
-        return "Post deleted sucessfully!";
+
+        Optional<Role> existingRole = roleRepository.findById(id);
+        if (existingRole.isPresent()) {
+            roleRepository.delete(existingRole.get());
+        return "Role deleted successfully!";
+    } else {
+        throw new ResourceNotFoundException("Role not found");
     }
-    public Role update(Role newRole, Integer id) {
-        return roleRepository.findById(id)
-                .map(post -> {
-                    post.setName(newRole.getName());
-                    return roleRepository.save(post);
-                })
-                .orElseGet(() -> {
-//                    newUser.set(id);
-                    return roleRepository.save(newRole);
-                });
+    }
+
+    public String update(Role newRole, Integer id) {
+        Optional<Role> roleData = this.roleRepository.findById(id);
+        if (roleData.isPresent()) {
+            Role existingRole = roleData.orElse(null);
+            existingRole.setName(newRole.getName());
+            // save existingUser in the database
+            this.roleRepository.save(existingRole);
+            // return statement
+            return "User updated successfully!";
+        } else {
+            throw new ResourceNotFoundException("User not found");
+        }
     }
 }
