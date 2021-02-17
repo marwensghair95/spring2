@@ -1,9 +1,6 @@
 package fivePoints.spring.projet2;
 
-import fivePoints.spring.projet2.models.Poste;
-import fivePoints.spring.projet2.models.Role;
-import fivePoints.spring.projet2.models.User;
-import fivePoints.spring.projet2.models.UserDetails;
+import fivePoints.spring.projet2.models.*;
 import fivePoints.spring.projet2.repositories.PosteRepository;
 import fivePoints.spring.projet2.repositories.RoleRepository;
 import fivePoints.spring.projet2.repositories.UserRepository;
@@ -13,6 +10,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -35,6 +34,11 @@ public class Projet2Application implements ApplicationRunner {
 		SpringApplication.run(Projet2Application.class, args);
 	}
 
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		// Clean up database tables
@@ -44,10 +48,10 @@ public class Projet2Application implements ApplicationRunner {
 		this.posteRepository.deleteAllInBatch();
 
 		// Save roles
-		Role superAdminRole = this.roleRepository.save(new Role("super-admin"));
-		Role adminRole = this.roleRepository.save(new Role("admin"));
-		Role userRole = this.roleRepository.save(new Role("user"));
-		Role guestRole = this.roleRepository.save(new Role("guest"));
+		Role superAdminRole = this.roleRepository.save(new Role(ERole.ROLE_SUPER_ADMIN));
+		Role adminRole = this.roleRepository.save(new Role(ERole.ROLE_ADMIN));
+		Role userRole = this.roleRepository.save(new Role(ERole.ROLE_USER));
+		Role guestRole = this.roleRepository.save(new Role(ERole.ROLE_GUEST));
 
 
 		// Save users

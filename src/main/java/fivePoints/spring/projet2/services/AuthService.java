@@ -1,5 +1,6 @@
 package fivePoints.spring.projet2.services;
 
+import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
 import fivePoints.spring.projet2.models.ERole;
 import fivePoints.spring.projet2.models.Role;
 import fivePoints.spring.projet2.models.User;
@@ -14,25 +15,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @Transactional
 public class AuthService {
+
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     RoleRepository roleRepository;
 
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public String login(LoginRequest loginRequest){
         return "";
     }
-    public ResponseEntity<?> register(SingupRequest signupRequest){
+    public ResponseEntity<?> register(@Valid  SingupRequest signupRequest){
 
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity
@@ -44,7 +47,7 @@ public class AuthService {
         newUser.setFirstName(signupRequest.getFirstName());
         newUser.setLastName(signupRequest.getLastName());
         newUser.setEmail(signupRequest.getEmail());
-//     newUser.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        newUser.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
 
         // Add roles associations to newUser
@@ -53,27 +56,33 @@ public class AuthService {
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "super-admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_SUPER_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
+                        Role supAdminRole = roleRepository.findByName(ERole.ROLE_SUPER_ADMIN)
+                                .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
+                        roles.add(supAdminRole);
 
                         break;
                     case "admin":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
+                        roles.add(adminRole);
+
+                        break;
+                    case "user":
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
+                        roles.add(userRole);
 
                         break;
                     default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
+                        Role guestRole = roleRepository.findByName(ERole.ROLE_GUEST)
+                                .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
+                        roles.add(guestRole);
                 }
             });
         }
