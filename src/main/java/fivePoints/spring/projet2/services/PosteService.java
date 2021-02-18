@@ -3,7 +3,9 @@ package fivePoints.spring.projet2.services;
 import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
 import fivePoints.spring.projet2.models.Poste;
 import fivePoints.spring.projet2.models.User;
+import fivePoints.spring.projet2.models.UserDetails;
 import fivePoints.spring.projet2.repositories.PosteRepository;
+import fivePoints.spring.projet2.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +21,8 @@ public class PosteService {
     public PosteService(PosteRepository repository) {
         this.postRepository = repository;
     }
+    @Autowired
+    UserRepository userRepository;
 
     public List<Poste> getAllPost(){
         return postRepository.findAll();
@@ -54,5 +58,21 @@ public class PosteService {
 //                    newUser.set(id);
                     return postRepository.save(newPost);
                 });
+    }
+
+    public String affectUserPoste(int idUser,int idPoste) {
+        Optional<Poste> poste1 =  postRepository.findById(idPoste);
+        Optional<User> user1= userRepository.findById(idUser);
+
+        if (poste1.isPresent() && user1.isPresent()) {
+            Poste existingPoste = poste1.orElse(null);
+            User existingUser = user1.orElse(null);
+            existingPoste.setUser(existingUser); // Set child reference
+
+            this.userRepository.save(existingUser);
+            return "Poste affected to user successfully!";
+        } else {
+            throw new ResourceNotFoundException("User not found");
+        }
     }
 }

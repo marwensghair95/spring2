@@ -1,5 +1,6 @@
 package fivePoints.spring.projet2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Table(name = "posts")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
 public class Poste implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +32,7 @@ public class Poste implements Serializable {
     private boolean published;
 
     // OneToMany Relations
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;

@@ -2,15 +2,19 @@ package fivePoints.spring.projet2.services;
 
 
 import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
+import fivePoints.spring.projet2.models.Poste;
 import fivePoints.spring.projet2.models.Role;
 import fivePoints.spring.projet2.models.User;
 import fivePoints.spring.projet2.repositories.PosteRepository;
 import fivePoints.spring.projet2.repositories.RoleRepository;
+import fivePoints.spring.projet2.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class RoleService {
@@ -21,9 +25,13 @@ public class RoleService {
         this.roleRepository = repository;
     }
 
-    public List<Role> getAllPost(){
+    @Autowired
+    UserRepository userRepository;
+
+    public List<Role> getAllRole(){
         return roleRepository.findAll();
     }
+
     public String savenewRole(Role newRole){
         roleRepository.save(newRole);
         return "Role added successfully";
@@ -54,6 +62,28 @@ public class RoleService {
             this.roleRepository.save(existingRole);
             // return statement
             return "User updated successfully!";
+        } else {
+            throw new ResourceNotFoundException("User not found");
+        }
+    }
+
+    public String affectUserRole(int idUser,int idRole) {
+        Optional<Role> role1 =  roleRepository.findById(idRole);
+        Optional<User> user1= userRepository.findById(idUser);
+
+        if (role1.isPresent() && user1.isPresent()) {
+            Role existingRole = role1.orElse(null);
+            User existingUser = user1.orElse(null);
+            System.out.println(existingRole.getId());
+            System.out.println(existingUser.getId());
+
+//            Set<Role> roles = new HashSet<>();
+//            roles.add(existingRole);
+//
+//            existingUser.setRoles(existingUser.getRoles().);
+//
+//            this.userRepository.save(existingUser);
+            return "Role affected to user successfully!";
         } else {
             throw new ResourceNotFoundException("User not found");
         }

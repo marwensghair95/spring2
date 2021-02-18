@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins="http://localhost:4200/")
 @RestController
 @RequestMapping(value="/roles")
 public class RoleController {
@@ -24,7 +25,7 @@ public class RoleController {
 
     @GetMapping("/allRole")
     public ResponseEntity<List<Role>> allRole() {
-        List<Role> listUsers = this.roleService.getAllPost();
+        List<Role> listUsers = this.roleService.getAllRole();
         return new ResponseEntity<>(listUsers, HttpStatus.OK);
     }
 
@@ -53,6 +54,11 @@ public class RoleController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRole(@PathVariable(value="id") int id) {
         String message = roleService.delete(id);
+        return ResponseEntity.ok().body(new MessageResponse(message));
+    }
+    @PutMapping ("/affectDetails/{idUser}/{idRole}")
+    public ResponseEntity<MessageResponse> affectUserDetails(@PathVariable (value="idUser") int idUser,@PathVariable (value="idRole") int idRole) {
+        String message = roleService.affectUserRole(idUser,idRole);
         return ResponseEntity.ok().body(new MessageResponse(message));
     }
 }

@@ -1,5 +1,6 @@
 package fivePoints.spring.projet2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Table(name = "roles")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
 public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,6 +29,7 @@ public class Role implements Serializable {
     private ERole name;
 
     // ManyToMany Relations
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,

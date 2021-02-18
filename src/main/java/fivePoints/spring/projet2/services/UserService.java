@@ -2,9 +2,13 @@ package fivePoints.spring.projet2.services;
 
 import fivePoints.spring.projet2.exceptions.ResourceNotFoundException;
 import fivePoints.spring.projet2.models.User;
+import fivePoints.spring.projet2.models.UserDetails;
+import fivePoints.spring.projet2.repositories.UserDetailsRepository;
 import fivePoints.spring.projet2.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +16,30 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserDetailsRepository userDetailsRepository;
 
     public String addUser(User user) {
         userRepository.save(user);
         return "User added successfully";
+    }
+
+    public String affectUserDetails(int idUser,int idDetail) {
+        Optional<User> user1 =  userRepository.findById(idUser);
+        Optional<UserDetails> userDetails1= userDetailsRepository.findById(idDetail);
+
+        if (user1.isPresent() && userDetails1.isPresent()) {
+            // get user object and details object
+            User existingUser = user1.orElse(null);
+            UserDetails existingDetails = userDetails1.orElse(null);
+
+            existingUser.setDetails(existingDetails); // Set child reference
+            existingDetails.setUser(existingUser); // Set parent reference
+            this.userRepository.save(existingUser);
+            return "Details affected to user successfully!";
+        } else {
+            throw new ResourceNotFoundException("User not found");
+        }
     }
 
     public List<User> getAllUsers() {

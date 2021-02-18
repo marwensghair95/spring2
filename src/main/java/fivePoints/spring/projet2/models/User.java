@@ -17,6 +17,7 @@ import java.util.Set;
 @Table(name = "user")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,6 +49,7 @@ public class User implements Serializable {
     private List<Poste> posts;
 
     // ManyToMany Relations
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,

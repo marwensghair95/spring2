@@ -23,9 +23,15 @@ public class UserController {
         String message = userService.addUser(user);
         return ResponseEntity.ok().body(new MessageResponse(message));
     }
+    @PutMapping ("/affectDetails/{idUser}/{idDetail}")
+    public ResponseEntity<MessageResponse> affectUserDetails(@PathVariable (value="idUser") int idUser,@PathVariable (value="idDetail") int idDetail) {
+        String message = userService.affectUserDetails(idUser,idDetail);
+        return ResponseEntity.ok().body(new MessageResponse(message));
+    }
 
     @GetMapping("/")
-   public ResponseEntity<List<User>> getAllUsers() {
+    @ResponseBody
+    public ResponseEntity<List<User>> getAllUsers() {
         List<User> listUsers = this.userService.getAllUsers();
         return new ResponseEntity<>(listUsers, HttpStatus.OK);
     }

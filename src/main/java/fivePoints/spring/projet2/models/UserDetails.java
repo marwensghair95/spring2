@@ -1,5 +1,6 @@
 package fivePoints.spring.projet2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Table(name = "user_details")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
 public class UserDetails implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +35,7 @@ public class UserDetails implements Serializable {
     private String linkedinProfileLink;
 
     // OneToOne Relations
+    @JsonIgnore
     @OneToOne(mappedBy = "details")
     private User user;
 

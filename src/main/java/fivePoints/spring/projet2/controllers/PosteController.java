@@ -65,4 +65,11 @@ public class PosteController {
     void deletePost(@PathVariable Integer id) {
         this.postService.delete(id);
     }
+
+    @PutMapping ("/affectDetails/{idUser}/{idPoste}")
+    public ResponseEntity<MessageResponse> affectUserDetails(@PathVariable (value="idUser") int idUser,@PathVariable (value="idPoste") int idPoste) {
+        String message = postService.affectUserPoste(idUser,idPoste);
+        return ResponseEntity.ok().body(new MessageResponse(message));
+    }
+
 }
